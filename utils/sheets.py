@@ -1,7 +1,6 @@
 import gspread
 import pandas as pd
 import streamlit as st
-import json
 from oauth2client.service_account import ServiceAccountCredentials
 
 SHEET_NAME = "tanmoys_library"
@@ -16,11 +15,10 @@ def connect_sheet():
     ]
 
     # Load credentials from Streamlit Secrets
-    creds_dict = json.loads(st.secrets["gcp_service_account"]["credentials"])
-
+    
     creds = ServiceAccountCredentials.from_json_keyfile_dict(
-        creds_dict,
-        scope
+    st.secrets["gcp_service_account"],
+    scope
     )
 
     client = gspread.authorize(creds)
