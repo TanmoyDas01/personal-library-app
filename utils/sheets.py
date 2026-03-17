@@ -6,6 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 SHEET_NAME = "tanmoys_library"
 
+
 @st.cache_resource
 def connect_sheet():
 
@@ -14,6 +15,7 @@ def connect_sheet():
         "https://www.googleapis.com/auth/drive"
     ]
 
+    # Load credentials from Streamlit Secrets
     creds_dict = json.loads(st.secrets["gcp_service_account"]["credentials"])
 
     creds = ServiceAccountCredentials.from_json_keyfile_dict(
@@ -26,3 +28,15 @@ def connect_sheet():
     sheet = client.open(SHEET_NAME).sheet1
 
     return sheet
+
+
+@st.cache_data(ttl=60)
+def load_books():
+
+    sheet = connect_sheet()
+
+    data = sheet.get_all_records()
+
+    df = pd.DataFrame(data)
+
+    return df
